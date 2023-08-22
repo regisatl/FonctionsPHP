@@ -104,7 +104,170 @@ $robot = new Robot();
 </html>
 ```
 
-Dans cet exemple, j'ai créé la classe `Robot` avec des méthodes pour générer un nom aléatoire, saluer, afficher la date et l'heure, vérifier si un nombre est pair ou impair, afficher le nom à l'envers et montrer un sens de l'humour aléatoire. La page HTML appelle la méthode `greet()` de l'objet `Robot` pour afficher le comportement souhaité à chaque rafraîchissement.
+Dans cet exemple, j'ai créé la classe `Robot` avec des méthodes pour générer un nom aléatoire, saluer, afficher la date et l'heure, vérifier si un nombre est pair ou impair, afficher le nom à l'envers et montrer un sens de l'humour aléatoire. La page HTML appelle la méthode `greet()` de l'objet `Robot` pour afficher le comportement souhaité à chaque rafraîchissement.Pour créer la page `homepage.phtml` avec un formulaire permettant à l'utilisateur de donner un nom au robot et de saisir un comportement, voici comment vous pourriez le faire :
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Homepage</title>
+</head>
+<body>
+    <h1>Créer votre propre robot</h1>
+    <form method="post" action="process.php">
+        <label for="robotName">Nom du robot :</label>
+        <input type="text" id="robotName" name="robotName"><br>
+
+        <label for="robotBehavior">Comportement du robot :</label>
+        <textarea id="robotBehavior" name="robotBehavior" rows="4" cols="50"></textarea><br>
+
+        <input type="submit" value="Créer le robot">
+    </form>
+</body>
+</html>
+```
+
+Assurez-vous de créer un fichier `process.php` dans le même répertoire que `homepage.phtml` pour gérer les données soumises par le formulaire. Voici comment vous pourriez le mettre en place :
+
+```php
+<?php
+class Robot {
+    // ... (les méthodes et propriétés de la classe Robot restent inchangées)
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $robotName = $_POST['robotName'];
+    $robotBehavior = $_POST['robotBehavior'];
+
+    $robot = new Robot();
+    $robot->setName($robotName);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Created</title>
+</head>
+<body>
+    <?php if (isset($robot)) : ?>
+        <h1>Robot créé avec succès !</h1>
+        <p>Nom du robot : <?php echo $robot->getName(); ?></p>
+        <p>Comportement du robot : <?php echo $robotBehavior; ?></p>
+    <?php else : ?>
+        <h1>Erreur lors de la création du robot</h1>
+    <?php endif; ?>
+</body>
+</html>
+```
+
+Assurez-vous que `process.php` et `homepage.phtml` se trouvent dans le même répertoire et que votre serveur Web est configuré pour exécuter des fichiers PHP et PHTML. Dans ce scénario, le formulaire de `homepage.phtml` soumet les données à `process.php`, où un nouvel objet `Robot` est créé avec le nom saisi et le comportement du robot est affiché sur la page après la soumission.
+
+Bien sûr, voici comment vous pourriez réorganiser la classe `Robot` pour qu'elle prenne en compte les informations saisies dans le formulaire :
+
+```php
+<?php
+class Robot {
+    private $name;
+    private $behavior;
+
+    public function __construct($name, $behavior) {
+        $this->name = $name;
+        $this->behavior = $behavior;
+    }
+
+    public function greet() {
+        echo "Salut, humain. Je suis {$this->name}.<br>";
+        $this->displayDateAndTime();
+        $this->checkEvenOdd();
+        $this->reverseName();
+        $this->senseOfHumor();
+    }
+
+    private function displayDateAndTime() {
+        echo "Nous sommes le " . date("d m Y") . ", il est " . date("H:i:s") . ".<br>";
+    }
+
+    private function checkEvenOdd() {
+        $number = mt_rand(1, 10);
+        echo "J'ai choisi le nombre $number. C'est un nombre " . ($number % 2 === 0 ? "pair" : "impair") . ".<br>";
+    }
+
+    private function reverseName() {
+        $reversedName = strrev($this->name);
+        echo "Mon nom à l'envers s'écrit $reversedName. Ah. Ah. Ah.<br>";
+    }
+
+    private function senseOfHumor() {
+        $randomNumber = mt_rand(1, 3);
+        if ($randomNumber === 1) {
+            echo "Vous voulez un café ?<br>";
+        } else {
+            echo "Extermination ! Extermination !<br>";
+        }
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getBehavior() {
+        return $this->behavior;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $robotName = $_POST['robotName'];
+    $robotBehavior = $_POST['robotBehavior'];
+
+    $robot = new Robot($robotName, $robotBehavior);
+}
+?>
+```
+
+Cette version de la classe `Robot` reçoit le nom et le comportement du robot lors de sa création. Dans le fichier `process.php`, les données du formulaire sont utilisées pour instancier un objet `Robot` avec le nom et le comportement saisis. Les méthodes de la classe restent essentiellement les mêmes, mais la construction de l'objet est basée sur les données du formulaire.
+
+Bien sûr, pour générer aléatoirement le nom du robot si l'utilisateur ne fournit pas de nom, vous pouvez ajuster le code comme suit :
+
+```php
+<?php
+class Robot {
+    private $name;
+    private $behavior;
+
+    public function __construct($name = null, $behavior) {
+        if ($name === null) {
+            $this->generateRandomName();
+        } else {
+            $this->name = $name;
+        }
+        $this->behavior = $behavior;
+    }
+
+    private function generateRandomName() {
+        $letters = range('A', 'Z');
+        shuffle($letters);
+        $name = implode(array_slice($letters, 0, 2)) . '-' . sprintf('%04d', mt_rand(0, 9999));
+        $this->name = $name;
+    }
+
+    // ... (autres méthodes restent inchangées)
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $robotName = $_POST['robotName'];
+    $robotBehavior = $_POST['robotBehavior'];
+
+    $robot = new Robot($robotName, $robotBehavior);
+}
+?>
+```
+
+Avec cette modification, la classe `Robot` accepte un argument optionnel `$name` dans son constructeur. Si l'utilisateur ne fournit pas de nom lors de la création de l'objet, la méthode `generateRandomName()` sera appelée pour générer un nom aléatoire. Si un nom est fourni, il sera utilisé comme nom du robot.
 
 
 <!-- Fonctions PHP -->
