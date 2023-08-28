@@ -55,7 +55,7 @@ class Robot {
     }
 
     public function greet() {
-        echo "Salut, humain. Je suis {$this->name}.<br>";
+        echo "Salut, humain. Je suis { $this->name}.<br>";
         $this->displayDateAndTime();
         $this->checkEvenOdd();
         $this->reverseName();
@@ -63,13 +63,13 @@ class Robot {
     }
 
     private function displayDateAndTime() {
-        echo "Nous sommes le " . date("d m Y") . ", il est " . date("H:i:s") . ".<br>";
+        echo "Nous sommes le ". date("d m Y") . ", il est " . date("H:i:s") . ".<br>";
     }
 
     private function checkEvenOdd() {
         $number = mt_rand(1, 10);
         echo "J'ai choisi le nombre $number. C'est un nombre " . ($number % 2 === 0 ? "pair" : "impair") . ".<br>";
-    }
+    }j
 
     private function reverseName() {
         $reversedName = strrev($this->name);
