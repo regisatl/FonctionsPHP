@@ -680,49 +680,47 @@ Bien sûr, voici une comparaison plus détaillée entre les sessions et les cook
 
 En résumé, les sessions en PHP sont plus adaptées pour stocker des données sensibles et importantes, car elles sont gérées côté serveur et ne sont pas accessibles directement par l'utilisateur. Les sessions sont également pratiques pour stocker de grandes quantités de données. D'autre part, les cookies sont utiles pour stocker de petites quantités d'informations, telles que des préférences utilisateur, et pour suivre les activités de l'utilisateur au fil du temps. Cependant, en raison de leur nature côté client, les cookies doivent être utilisés avec prudence pour éviter toute exposition de données sensibles.
 
-```php
+Ce code PHP gère le processus d'upload d'une image depuis un formulaire HTML vers un répertoire spécifique (`$target_dir`). Il effectue diverses vérifications pour s'assurer que le fichier téléchargé est une image valide et respecte certaines conditions.
 
-$target_dir = "uploads/";
-$target_file = $target_dir . basename($_FILES["pictures"]["name"]);
-$uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-// Check if image file is a actual image or fake image
+Voici une explication ligne par ligne de ce code :
+
+```php
+$target_dir = "uploads/"; // Répertoire où les images téléchargées seront stockées
+$target_file = $target_dir . basename($_FILES["pictures"]["name"]); // Chemin complet du fichier cible
+$uploadOk = 1; // Variable pour suivre si le téléchargement est possible
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION)); // Extension du fichier image
+
 if (isset($_POST["validate"])) {
-    $check = getimagesize($_FILES["pictures"]["tmp_name"]);
+    $check = getimagesize($_FILES["pictures"]["tmp_name"]); // Vérifier si le fichier est une image valide
     if ($check !== false) {
         echo "File is an image - " . $check["mime"] . ".";
-        $uploadOk = 1;
+        $uploadOk = 1; // Le téléchargement est possible car le fichier est une image
     } else {
         echo "File is not an image.";
-        $uploadOk = 0;
+        $uploadOk = 0; // Le téléchargement n'est pas possible car le fichier n'est pas une image
     }
 }
 
-// Check if file already exists
 if (file_exists($target_file)) {
     echo "Sorry, file already exists.";
-    $uploadOk = 0;
+    $uploadOk = 0; // Le téléchargement n'est pas possible car le fichier existe déjà
 }
 
-// Check file size
 if ($_FILES["pictures"]["size"] > 500000) {
     echo "Sorry, your file is too large.";
-    $uploadOk = 0;
+    $uploadOk = 0; // Le téléchargement n'est pas possible car le fichier est trop volumineux
 }
 
-// Allow certain file formats
 if (
     $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
     && $imageFileType != "gif"
 ) {
     echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-    $uploadOk = 0;
+    $uploadOk = 0; // Le téléchargement n'est pas possible car le format de fichier n'est pas autorisé
 }
 
-// Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
-    // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["pictures"]["tmp_name"], $target_file)) {
         echo "The file " . htmlspecialchars(basename($_FILES["pictures"]["name"])) . " has been uploaded.";
@@ -731,5 +729,143 @@ if ($uploadOk == 0) {
     }
 }
 ```
+
+En résumé, ce code effectue les actions suivantes :
+
+1. Il détermine le chemin complet du fichier cible en combinant le répertoire de destination avec le nom du fichier envoyé.
+2. Il vérifie si le formulaire a été soumis pour le traitement.
+3. Il utilise la fonction `getimagesize()` pour vérifier si le fichier est une image valide.
+4. Il vérifie si le fichier existe déjà dans le répertoire de destination.
+5. Il vérifie si la taille du fichier est inférieure à 500 000 octets (500 Ko).
+6. Il vérifie si l'extension du fichier est autorisée (JPG, JPEG, PNG ou GIF).
+7. En fonction des vérifications précédentes, il affiche des messages d'erreur ou réussite concernant le téléchargement du fichier.
+
+Assurez-vous d'intégrer ce code dans un formulaire HTML approprié pour permettre aux utilisateurs de télécharger des images.
+
+Bien sûr, voici un exemple de code PHP pour charger et envoyer une image dans une base de données, en vérifiant également la taille minimale du fichier image. Dans cet exemple, nous supposons que vous utilisez une base de données MySQL et que vous avez une table appelée "images" avec les colonnes "id" (auto-incrément), "nom" (nom du fichier) et "image" (type BLOB pour stocker l'image).
+
+```php
+<?php
+// Vérifier si le formulaire a été soumis
+if (isset($_POST['submit'])) {
+    // Vérifier si un fichier a été téléchargé
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        // Vérifier le type de fichier (assurez-vous qu'il s'agit bien d'une image)
+        $mimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $uploadedMimeType = $_FILES['image']['type'];
+        if (!in_array($uploadedMimeType, $mimeTypes)) {
+            echo "Le fichier n'est pas une image valide.";
+            exit();
+        }
+
+        // Vérifier la taille minimale du fichier (en octets)
+        $minFileSize = 1024; // 1 Ko
+        if ($_FILES['image']['size'] < $minFileSize) {
+            echo "La taille de l'image est inférieure à la taille minimale autorisée.";
+            exit();
+        }
+
+        // Charger le fichier dans une variable
+        $imageData = file_get_contents($_FILES['image']['tmp_name']);
+
+        // Connexion à la base de données (remplacez les valeurs par vos propres informations)
+        $servername = 'localhost';
+        $username = 'nom_utilisateur';
+        $password = 'mot_de_passe';
+        $dbname = 'nom_base_de_donnees';
+
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Vérifier la connexion à la base de données
+        if ($conn->connect_error) {
+            die("La connexion à la base de données a échoué : " . $conn->connect_error);
+        }
+
+        // Préparer et exécuter la requête SQL pour insérer l'image
+        $stmt = $conn->prepare("INSERT INTO images (nom, image) VALUES (?, ?)");
+        $stmt->bind_param("sb", $_FILES['image']['name'], $imageData);
+        
+        if ($stmt->execute()) {
+            echo "Image téléchargée avec succès.";
+        } else {
+            echo "Erreur lors du téléchargement de l'image : " . $stmt->error;
+        }
+
+        // Fermer la connexion à la base de données
+        $stmt->close();
+        $conn->close();
+    } else {
+        echo "Erreur lors du téléchargement du fichier.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Téléchargement d'image</title>
+</head>
+<body>
+    <form action="" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*">
+        <button type="submit" name="submit">Télécharger</button>
+    </form>
+</body>
+</html>
+```
+
+N'oubliez pas d'ajuster les informations de connexion à la base de données (serveur, nom d'utilisateur, mot de passe et nom de la base de données) ainsi que le schéma de votre table "images" selon vos besoins.
+
+
+Bien sûr, voici comment vous pouvez afficher une image stockée en tant que photo sur une page HTML en utilisant le code PHP et HTML ensemble :
+
+```php
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Affichage d'image</title>
+</head>
+<body>
+    <?php
+    // Connexion à la base de données (remplacez les valeurs par vos propres informations)
+    $servername = 'localhost';
+    $username = 'nom_utilisateur';
+    $password = 'mot_de_passe';
+    $dbname = 'nom_base_de_donnees';
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Vérifier la connexion à la base de données
+    if ($conn->connect_error) {
+        die("La connexion à la base de données a échoué : " . $conn->connect_error);
+    }
+
+    // Récupérer les données de l'image depuis la base de données
+    $imageId = 1; // L'identifiant de l'image que vous souhaitez afficher
+    $sql = "SELECT nom, image FROM images WHERE id = $imageId";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $imageName = $row['nom'];
+        $imageData = $row['image'];
+
+        // Afficher l'image en tant que photo
+        echo "<h2>Image : $imageName</h2>";
+        echo "<img src='data:image/jpeg;base64," . base64_encode($imageData) . "' alt='$imageName'>";
+    } else {
+        echo "Aucune image trouvée.";
+    }
+
+    // Fermer la connexion à la base de données
+    $conn->close();
+    ?>
+</body>
+</html>
+```
+
+Assurez-vous de remplacer les informations de connexion à la base de données (`$servername`, `$username`, `$password`, `$dbname`) avec vos propres valeurs. Le code ci-dessus récupère les données de l'image de la base de données en fonction de l'identifiant de l'image (`$imageId`). Ensuite, il affiche l'image en tant que photo à l'aide de la balise `<img>` avec la source définie comme une URL de données encodée en base64.
+
+Notez que ce code est basé sur l'hypothèse que vous avez déjà stocké des images dans votre base de données conformément à la logique précédemment fournie.
 
 
