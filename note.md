@@ -601,3 +601,135 @@ Absolument, voici une liste de fonctions PHP très importantes avec des exemples
      ```
 
 Ces exemples couvrent certaines des fonctions PHP les plus importantes pour les chaînes de caractères, les tableaux, les dates et heures, la gestion des fichiers et des variables. Il existe bien sûr beaucoup d'autres fonctions disponibles pour répondre à différents besoins de développement.
+
+<!-- SESSION ET CCOOKIE -->
+
+En PHP, les sessions et les cookies sont des mécanismes importants pour gérer l'état et la persistance des données entre les différentes requêtes d'un utilisateur à un site web. Ils sont souvent utilisés pour créer des expériences utilisateur personnalisées et pour stocker des informations temporaires ou permanentes.
+
+1. **Session en PHP :**
+Une session en PHP est une façon de stocker des données côté serveur pour un utilisateur spécifique, de manière à ce que ces données soient disponibles pendant toute la durée de la visite de l'utilisateur sur le site web. Les informations stockées dans une session sont accessibles à travers différentes pages et requêtes effectuées par cet utilisateur. Les sessions sont souvent utilisées pour stocker des données sensibles comme les informations de connexion, les préférences utilisateur, etc.
+
+**Exemple d'utilisation de sessions :**
+Supposons que vous souhaitez stocker le nom d'utilisateur d'un utilisateur connecté tout au long de sa visite sur votre site :
+
+```php
+// Démarre la session
+session_start();
+
+// Stocke le nom d'utilisateur dans la session
+$_SESSION['username'] = 'utilisateur123';
+```
+
+Sur une autre page du site, vous pouvez accéder au nom d'utilisateur stocké dans la session :
+
+```php
+// Démarre la session
+session_start();
+
+// Accède au nom d'utilisateur depuis la session
+if (isset($_SESSION['username'])) {
+    echo "Bienvenue, " . $_SESSION['username'];
+} else {
+    echo "Utilisateur non connecté.";
+}
+```
+
+2. **Cookie en PHP :**
+Un cookie en PHP est un petit fichier de données stocké sur l'ordinateur de l'utilisateur. Les cookies sont envoyés par le serveur et stockés dans le navigateur de l'utilisateur. Ils sont utilisés pour stocker des informations qui doivent persister entre les sessions et même après que l'utilisateur a quitté le site.
+
+**Exemple d'utilisation de cookies :**
+Imaginons que vous souhaitez stocker la langue préférée d'un utilisateur afin de lui afficher le contenu dans cette langue lors de ses prochaines visites :
+
+```php
+// Crée un cookie pour stocker la langue préférée
+$expiry = time() + 60 * 60 * 24 * 30; // Expiration dans 30 jours
+setcookie('lang', 'fr', $expiry);
+
+// Plus tard, sur une autre page, récupérez la langue préférée depuis le cookie
+if (isset($_COOKIE['lang'])) {
+    $lang = $_COOKIE['lang'];
+    echo "Langue préférée : " . $lang;
+} else {
+    echo "Langue par défaut.";
+}
+```
+
+Il est important de noter que les cookies ont des limites en termes de taille et que les utilisateurs peuvent les désactiver ou les supprimer, tandis que les sessions sont gérées côté serveur et sont plus sécurisées pour stocker des données sensibles.
+
+En résumé, les sessions et les cookies en PHP sont des outils puissants pour gérer l'état et stocker des informations temporaires ou permanentes pour les utilisateurs sur un site web. Le choix entre les deux dépend des besoins spécifiques de votre application et des niveaux de sécurité requis.
+
+Bien sûr, voici une comparaison plus détaillée entre les sessions et les cookies en PHP :
+
+**1. Sessions en PHP :**
+
+- **Stockage :** Les données de session sont stockées côté serveur. Le serveur crée un identifiant unique de session pour chaque utilisateur, et les données sont associées à cet identifiant.
+- **Durée de vie :** Les données de session restent en mémoire tant que la session est active, généralement jusqu'à ce que l'utilisateur ferme le navigateur ou que la session expire en raison de l'inactivité.
+- **Taille :** Les sessions peuvent stocker une quantité plus importante de données, car elles sont stockées côté serveur.
+- **Sécurité :** Les données de session ne sont pas accessibles directement par l'utilisateur, ce qui les rend plus sécurisées pour stocker des informations sensibles.
+- **Exemple d'utilisation :** Stocker des informations de connexion, des paniers d'achats temporaires, des préférences utilisateur, etc.
+
+**2. Cookies en PHP :**
+
+- **Stockage :** Les cookies sont stockés côté client, c'est-à-dire dans le navigateur de l'utilisateur.
+- **Durée de vie :** Les cookies peuvent être persistants (restant même après la fermeture du navigateur) ou de session (disparus après la fermeture du navigateur).
+- **Taille :** Les cookies ont une limite de taille (généralement quelques kilo-octets), ce qui restreint la quantité de données qu'ils peuvent contenir.
+- **Sécurité :** Les cookies sont visibles et accessibles par l'utilisateur, ce qui peut les rendre vulnérables si des données sensibles y sont stockées sans cryptage approprié.
+- **Exemple d'utilisation :** Mémoriser des préférences utilisateur (comme la langue), suivre les activités de l'utilisateur, garder les utilisateurs connectés (à l'aide de cookies persistants), etc.
+
+**Résumé :**
+
+En résumé, les sessions en PHP sont plus adaptées pour stocker des données sensibles et importantes, car elles sont gérées côté serveur et ne sont pas accessibles directement par l'utilisateur. Les sessions sont également pratiques pour stocker de grandes quantités de données. D'autre part, les cookies sont utiles pour stocker de petites quantités d'informations, telles que des préférences utilisateur, et pour suivre les activités de l'utilisateur au fil du temps. Cependant, en raison de leur nature côté client, les cookies doivent être utilisés avec prudence pour éviter toute exposition de données sensibles.
+
+```php
+
+$target_dir = "uploads/";
+$target_file = $target_dir . basename($_FILES["pictures"]["name"]);
+$uploadOk = 1;
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+// Check if image file is a actual image or fake image
+if (isset($_POST["validate"])) {
+    $check = getimagesize($_FILES["pictures"]["tmp_name"]);
+    if ($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+}
+
+// Check if file already exists
+if (file_exists($target_file)) {
+    echo "Sorry, file already exists.";
+    $uploadOk = 0;
+}
+
+// Check file size
+if ($_FILES["pictures"]["size"] > 500000) {
+    echo "Sorry, your file is too large.";
+    $uploadOk = 0;
+}
+
+// Allow certain file formats
+if (
+    $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif"
+) {
+    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+    $uploadOk = 0;
+}
+
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk == 0) {
+    echo "Sorry, your file was not uploaded.";
+    // if everything is ok, try to upload file
+} else {
+    if (move_uploaded_file($_FILES["pictures"]["tmp_name"], $target_file)) {
+        echo "The file " . htmlspecialchars(basename($_FILES["pictures"]["name"])) . " has been uploaded.";
+    } else {
+        echo "Sorry, there was an error uploading your file.";
+    }
+}
+```
+
+
