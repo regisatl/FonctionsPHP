@@ -269,6 +269,186 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 Avec cette modification, la classe `Robot` accepte un argument optionnel `$name` dans son constructeur. Si l'utilisateur ne fournit pas de nom lors de la création de l'objet, la méthode `generateRandomName()` sera appelée pour générer un nom aléatoire. Si un nom est fourni, il sera utilisé comme nom du robot.
 
+<!-- Answers of HIGHFIVE -->
+## robot_functions.php
+```php
+<?php
+declare(strict_types=1);
+
+require_once('request.php');
+
+date_default_timezone_set("Africa/Porto-Novo");
+
+function generateRandomRobotName()
+{
+      $letters = range('A', 'Z');
+      $randomLetters = $letters[array_rand($letters)] . $letters[array_rand($letters)];
+      $randomNumbers = rand(1000, 9999);
+      return $randomLetters . '-' . $randomNumbers;
+}
+
+function greet(string $name)
+{
+      return "Salut humain je suis $name";
+}
+
+function robotBehavior()
+{
+      $fractions = mt_rand(1, 3);
+
+      if ($fractions === 1) {
+            return "Vous voulez un café ☕☕";
+      } else {
+            return "Extermination 😈😈!!! ... Extermination😈😈 !!! ....";
+      }
+}
+?>
+```
+## generic_functions.php
+```php
+<?php
+declare(strict_types=1);
+
+      function getCurrentDateTime()
+      {
+            return "Nous sommes le " . date("d m Y") . ", il est " . date("H:i:s") . ".<br>";
+      }
+      function checkEvenOdd(int $number)
+      {
+            return ($number % 2 === 0) ? "Le nombre choisi est pair" : "Le nombre choisi est impair";
+      }
+      function chooseRandomNumberAndParity()
+      {
+            $number = rand(0, 10);
+            checkEvenOdd($number);
+            return "J'ai choisi le nombre $number";
+      }
+      function reverseName(string $name)
+      {
+            $reversedName = strrev($name);
+            return "Mon nom à l'envers s'écrit $reversedName Ah😂. Ah😂. Ah😂.<br>";
+      }
+
+?>
+```
+
+## homepage.phtml
+```php
+<?php
+require('generic_functions.php');
+require('robot_functions.php');
+require_once('request.php');
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+      <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+      <title>homePage</title>
+      <style>
+            *,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5 {
+                  font-family: 'Poppins';
+                  font-size: 1rem;
+            }
+      </style>
+</head>
+
+<body class="container">
+
+      <div class="row">
+            <div class="col-md-6 mt-5">
+                  <h1>Formulaire de robot</h1>
+                  <form action="#" method="POST">
+                        <div class="form-floating mb-3">
+                              <input type="text" class="form-control" name="robotName"
+                                    placeholder="Entrez votre pseudonyme" required>
+                              <label for="robotName">Entrez un nom pour votre robot</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                              <input type="text" class="form-control" name="robotBehavior"
+                                    placeholder="Entrez votre pseudonyme" required>
+                              <label for="robotBehavior">Entrez le comportement de moralité du robot</label>
+                        </div>
+                        <button type="submit" name="valider" class="btn btn-primary fw-bold w-100 py-3">Submit</button>
+                  </form>
+            </div>
+            <div class="col-md-6 mt-5 pt-4">
+                  <p>
+                        <?= greet($robotName); ?>
+                  </p>
+                  <p>
+                        <?= getCurrentDateTime(); ?>
+                  </p>
+                  <p>
+                        <?= chooseRandomNumberAndParity(); ?>
+                  </p>
+                  <p>
+                        <?= reverseName($robotName); ?>
+                  </p>
+                  <p>
+                        <?= robotBehavior(); ?>
+                  </p>
+                  <p>
+                        <?= $robotName; ?>
+                  </p>
+                  <p>
+                        <?= $robotBehavior; ?>
+                  </p>
+
+            </div>
+      </div>
+
+</body>
+
+</html>
+```
+
+## request.php
+
+```php
+<?php
+$robotName;
+$robotBehavior;
+
+
+
+if (isset($_GET['valider'])) {
+      if (!empty($_GET['robotName']) && !empty($_GET['robotBehavior'])) {
+
+            $robotName = $_GET['robotName'];
+            $robotBehavior = $_GET['robotBehavior'];
+
+      } else {
+
+            $robotName = generateRandomRobotName();
+      }
+      $robotBehavior = robotBehavior();
+}
+
+$robotName = generateRandomRobotName();
+$robotBehavior = robotBehavior();
+
+?>
+```
+## index.php
+
+```php
+<?php 
+require 'homepage.phtml'; 
+?>
+```
 
 <!-- Fonctions PHP -->
 PHP (Hypertext Preprocessor) est un langage de programmation populaire utilisé pour développer des applications web dynamiques. Il dispose d'un grand nombre de fonctions intégrées qui permettent d'effectuer diverses opérations. Voici une liste de certaines fonctions PHP couramment utilisées, avec leurs définitions et des exemples :
