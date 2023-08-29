@@ -868,4 +868,56 @@ Assurez-vous de remplacer les informations de connexion à la base de données (
 
 Notez que ce code est basé sur l'hypothèse que vous avez déjà stocké des images dans votre base de données conformément à la logique précédemment fournie.
 
+En PHP, les superglobales sont des variables prédéfinies qui sont disponibles dans tous les contextes du script (dans les fonctions, les classes, etc.). Elles contiennent des informations spécifiques à différentes facettes de l'exécution du script, telles que les données de formulaire, les informations de session, les en-têtes HTTP, etc. Voici une liste des superglobales en PHP, avec leurs définitions et utilisations :
+
+1. **$GLOBALS :**
+   - **Définition :** Une superglobale qui contient toutes les variables globales.
+   - **Utilité :** Utilisée pour accéder aux variables globales de n'importe où dans le script, même à l'intérieur des fonctions.
+
+2. **$_SERVER :**
+   - **Définition :** Contient des informations sur le serveur et l'environnement d'exécution.
+   - **Utilité :** Utilisée pour récupérer des informations telles que l'URL, les en-têtes HTTP, le nom du serveur, etc.
+
+3. **$_GET :**
+   - **Définition :** Contient les données passées via la méthode HTTP GET (URL).
+   - **Utilité :** Utilisée pour récupérer les valeurs des paramètres d'URL.
+
+4. **$_POST :**
+   - **Définition :** Contient les données envoyées via la méthode HTTP POST (formulaire).
+   - **Utilité :** Utilisée pour récupérer les valeurs des champs de formulaire.
+
+5. **$_REQUEST :**
+   - **Définition :** Contient les données de $_GET, $_POST et $_COOKIE combinées.
+   - **Utilité :** Utilisée pour accéder aux données des requêtes sans se soucier de la méthode HTTP utilisée.
+
+6. **$_FILES :**
+   - **Définition :** Contient les informations sur les fichiers téléchargés via les formulaires.
+   - **Utilité :** Utilisée pour manipuler les fichiers téléchargés, tels que leur nom, type et emplacement temporaire.
+
+7. **$_SESSION :**
+   - **Définition :** Contient les variables de session créées et stockées pour l'utilisateur.
+   - **Utilité :** Utilisée pour stocker et récupérer des données entre différentes pages pendant une session utilisateur.
+
+8. **$_COOKIE :**
+   - **Définition :** Contient les valeurs des cookies envoyés par le client au serveur.
+   - **Utilité :** Utilisée pour accéder aux cookies stockés sur l'ordinateur de l'utilisateur.
+
+9. **$_ENV :**
+   - **Définition :** Contient les variables d'environnement de l'hôte serveur.
+   - **Utilité :** Utilisée pour accéder aux variables d'environnement du système.
+
+10. **$_GLOBALS :** (Obsolète à partir de PHP 7.0)
+    - **Définition :** Contient une référence à toutes les variables globales.
+    - **Utilité :** Utilisée pour accéder aux variables globales depuis n'importe où dans le script.
+
+11. **$HTTP_RAW_POST_DATA :** (Obsolète à partir de PHP 5.6)
+    - **Définition :** Contient les données brutes de la requête POST.
+    - **Utilité :** Utilisée pour accéder aux données POST brutes sans utiliser $_POST.
+
+12. **$argc et $argv :**
+    - **Définition :** $argc contient le nombre d'arguments passés au script en ligne de commande, et $argv contient un tableau des arguments eux-mêmes.
+    - **Utilité :** Utilisées pour récupérer les arguments passés à un script PHP exécuté en ligne de commande.
+
+Ces superglobales offrent une manière pratique de récupérer et manipuler diverses informations, qu'il s'agisse de données de formulaire, d'informations de serveur, de variables de session, etc. Utilisez-les judicieusement pour accéder aux données dont vous avez besoin dans vos scripts PHP.
+
 
