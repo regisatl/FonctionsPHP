@@ -1100,4 +1100,93 @@ En PHP, les superglobales sont des variables prédéfinies qui sont disponibles 
 
 Ces superglobales offrent une manière pratique de récupérer et manipuler diverses informations, qu'il s'agisse de données de formulaire, d'informations de serveur, de variables de session, etc. Utilisez-les judicieusement pour accéder aux données dont vous avez besoin dans vos scripts PHP.
 
+PHP dispose d'un grand nombre de fonctions pour la manipulation des chaînes de caractères. Voici une liste de quelques-unes des fonctions les plus couramment utilisées avec des exemples pour chacune d'entre elles :
+
+1. **strlen** : Retourne la longueur d'une chaîne de caractères.
+
+   ```php
+   $texte = "Hello, world!";
+   $longueur = strlen($texte); // $longueur vaut 13
+   ```
+
+2. **strpos** : Cherche la position d'une sous-chaîne dans une chaîne.
+
+   ```php
+   $phrase = "Bonjour à tous!";
+   $position = strpos($phrase, "à"); // $position vaut 9
+   ```
+
+3. **str_replace** : Remplace toutes les occurrences d'une sous-chaîne par une autre.
+
+   ```php
+   $texte = "Bonjour à tous!";
+   $nouveau_texte = str_replace("Bonjour", "Salut", $texte); // $nouveau_texte vaut "Salut à tous!"
+   ```
+
+4. **strtolower** : Convertit une chaîne en minuscules.
+
+   ```php
+   $majuscules = "HELLO";
+   $minuscules = strtolower($majuscules); // $minuscules vaut "hello"
+   ```
+
+5. **strtoupper** : Convertit une chaîne en majuscules.
+
+   ```php
+   $minuscules = "hello";
+   $majuscules = strtoupper($minuscules); // $majuscules vaut "HELLO"
+   ```
+
+6. **substr** : Retourne une sous-chaîne à partir d'une chaîne.
+
+   ```php
+   $texte = "abcdef";
+   $partie = substr($texte, 2, 3); // $partie vaut "cde"
+   ```
+
+7. **trim** : Supprime les espaces au début et à la fin d'une chaîne.
+
+   ```php
+   $texte = "   Bonjour   ";
+   $texte_nettoye = trim($texte); // $texte_nettoye vaut "Bonjour"
+   ```
+
+8. **explode** : Divise une chaîne en un tableau en fonction d'un délimiteur.
+
+   ```php
+   $liste = "pomme,banane,orange";
+   $fruits = explode(",", $liste); // $fruits est un tableau ["pomme", "banane", "orange"]
+   ```
+
+9. **implode** : Fusionne les éléments d'un tableau en une chaîne, en les séparant avec un délimiteur.
+
+   ```php
+   $fruits = ["pomme", "banane", "orange"];
+   $liste = implode(", ", $fruits); // $liste vaut "pomme, banane, orange"
+   ```
+
+10. **strrev** : Inverse une chaîne de caractères.
+
+    ```php
+    $texte = "Hello";
+    $inverse = strrev($texte); // $inverse vaut "olleH"
+    ```
+
+11. **str_split** : Divise une chaîne en un tableau de caractères.
+
+    ```php
+    $texte = "Hello";
+    $caracteres = str_split($texte); // $caracteres est un tableau ["H", "e", "l", "l", "o"]
+    ```
+
+12. **htmlspecialchars** : Convertit les caractères spéciaux en entités HTML.
+
+    ```php
+    $texte = "<script>alert('Attaque XSS');</script>";
+    $securise = htmlspecialchars($texte);
+    // $securise vaut "&lt;script&gt;alert('Attaque XSS');&lt;/script&gt;"
+    ```
+
+Ces exemples illustrent quelques-unes des fonctions de manipulation de chaînes de caractères en PHP. Il existe de nombreuses autres fonctions disponibles pour répondre à divers besoins de traitement de texte.
+
 
