@@ -1189,4 +1189,44 @@ PHP dispose d'un grand nombre de fonctions pour la manipulation des chaînes de 
 
 Ces exemples illustrent quelques-unes des fonctions de manipulation de chaînes de caractères en PHP. Il existe de nombreuses autres fonctions disponibles pour répondre à divers besoins de traitement de texte.
 
+Bien sûr, voici le code pour votre projet CRUD PHP dans `public/index.php` en utilisant les routes et les appels de contrôleur appropriés :
+
+```php
+<?php
+require_once '../config/config.php';
+require_once '../controllers/AlbumController.php';
+
+$controller = new AlbumController($pdo);
+
+$request = $_SERVER['REQUEST_URI'];
+
+$chaine = strpos($request, "?");
+
+if ($chaine) {
+    $request = strstr($request, 0, $chaine);
+}
+
+if ($request === "/index" || $request === "/") {
+    $controller->displayAlbumList();
+} else if (strpos($request, "/editAlbum") === 0 && isset($_GET['id'])) {
+    $controller->displayEditForm($_GET['id']);
+} else if ($request === "/updateAlbum" && isset($_POST['id'])) {
+    $controller->updateAlbum($_POST['id'], $_POST['title'], $_POST['artist']);
+    header('Location: /index.php');
+    exit();
+} else if (strpos($request, "/deleteAlbum") === 0 && isset($_GET['id'])) {
+    $controller->deleteAlbum($_GET['id']);
+    header('Location: /index.php');
+    exit();
+} else if ($request === "/addAlbum") {
+    $controller->displayAddForm();
+} else {
+    header("HTTP/1.0 404 Not Found");
+    echo '404 Not Found';
+    exit();
+}
+?>
+```
+
+Ce code prend en compte les routes basées sur les URL demandées et appelle les méthodes appropriées du contrôleur en fonction de l'URL. De plus, il gère les paramètres de requête et effectue les redirections nécessaires après une mise à jour ou une suppression. En cas d'URL non reconnue, il affiche une erreur 404.
 
